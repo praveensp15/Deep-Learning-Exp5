@@ -28,9 +28,9 @@ STEP 6: Make Predictions and plot the graph with the Actual and Predicted values
 
 ### PROGRAM
 
-**Name:JENISHA TEENA ROSE F**
+**Name:S Praveen
 
-**Register Number:2305001010**
+**Register Number:2305001027
 
 ~~~
 import numpy as np
