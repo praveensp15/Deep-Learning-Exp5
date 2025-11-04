@@ -2,58 +2,118 @@
 
 DL-Implement a Recurrent Neural Network model for stock price prediction.
 
-**AIM**
+### AIM
 
 To develop a Recurrent Neural Network (RNN) model for predicting stock prices using historical closing price data.
 
-**THEORY**
+### THEORY
 
-**Neural Network Model**
-
-Include the neural network model diagram.
-
-**DESIGN STEPS**
-
-STEP 1:
-
-Write your own steps
-
-STEP 2:
-
-STEP 3:
-
-STEP 4:
-
-STEP 5:
-
-STEP 6:
-
-**PROGRAM**
-
-**Name:**
-
-**Register Number:**
+### Neural Network Model
+<img width="619" height="585" alt="image" src="https://github.com/user-attachments/assets/2a2d2729-fef2-438d-b3ef-da16309e06ba" />
 
 
-  
-    # write your code here
+### DESIGN STEPS
 
+STEP 1: Read the csv file and create the Data frame using pandas.
 
+STEP 2: Select the " Open " column for prediction. Or select any column of your interest and scale the values using MinMaxScaler.
 
-**OUTPUT**
+STEP 3: Create two lists for X_train and y_train. And append the collection of 60 readings in X_train, for which the 61st reading will be the first output in y_train.
 
-Training Loss Over Epochs Plot
+STEP 4: Create a model with the desired number of neurons and one output neuron.
 
-Include your plot here
+STEP 5: Follow the same steps to create the Test data. But make sure you combine the training data with the test data.
 
-**True Stock Price, Predicted Stock Price vs time**
+STEP 6: Make Predictions and plot the graph with the Actual and Predicted values.
 
-Include your plot here
+### PROGRAM
 
-**Predictions**
+**Name:JENISHA TEENA ROSE F**
 
-Include the predictions on test data
+**Register Number:2305001010**
+
+~~~
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from keras import layers
+from keras.models import Sequential
+
+dataset_train = pd.read_csv('trainset.csv')
+
+dataset_train.columns
+
+dataset_train.head()
+
+train_set = dataset_train.iloc[:,1:2].values
+type(train_set)
+train_set.shape
+
+sc = MinMaxScaler(feature_range=(0,1))
+training_set_scaled = sc.fit_transform(train_set)
+training_set_scaled.shape
+
+X_train_array = []
+y_train_array = []
+for i in range(60, 1259):
+  X_train_array.append(training_set_scaled[i-60:i,0])
+  y_train_array.append(training_set_scaled[i,0])
+X_train, y_train = np.array(X_train_array), np.array(y_train_array)
+X_train1 = X_train.reshape((X_train.shape[0], X_train.shape[1],1))
+
+X_train.shape
+
+length = 60
+n_features = 1
+
+model = Sequential([layers.SimpleRNN(40,input_shape=(60,1)),
+                    layers.Dense(1)])
+model.compile(optimizer='adam',loss='mse')
+model.summary()
+
+model.compile(optimizer='adam', loss='mse')
+
+model.fit(X_train1,y_train,epochs=25, batch_size=64)
+
+model.summary()
+dataset_test = pd.read_csv('testset.csv')
+test_set = dataset_test.iloc[:,1:2].values
+test_set.shape
+dataset_total = pd.concat((dataset_train['Open'],dataset_test['Open']),axis=0)
+
+inputs = dataset_total.values
+inputs = inputs.reshape(-1,1)
+inputs_scaled=sc.transform(inputs)
+X_test = []
+for i in range(60,1384):
+  X_test.append(inputs_scaled[i-60:i,0])
+X_test = np.array(X_test)
+X_test = np.reshape(X_test,(X_test.shape[0], X_test.shape[1],1))
+
+X_test.shape
+predicted_stock_price_scaled = model.predict(X_test)
+predicted_stock_price = sc.inverse_transform(predicted_stock_price_scaled)
+
+plt.plot(np.arange(0,1384),inputs, color='red', label = 'Test(Real) Google stock price')
+plt.plot(np.arange(60,1384),predicted_stock_price, color='blue', label = 'Predicted Google stock price')
+plt.title('Google Stock Price Prediction')
+plt.xlabel('Time')
+plt.ylabel('Google Stock Price')
+plt.legend()
+plt.show()
+~~~
+
+### OUTPUT
+
+### True Stock Price, Predicted Stock Price vs time
+<img width="722" height="565" alt="image" src="https://github.com/user-attachments/assets/a00d1e0d-d318-43d6-af12-53af47bf1578" />
+
+### Mean Square Error:
+
+<img width="436" height="46" alt="image" src="https://github.com/user-attachments/assets/350e0785-7df7-4271-8925-4efc89f35404" />
+
 
 **RESULT**
 
-Include your result here
+Thus the stock price is predicted using Recurrent Neural Networks successfully.
